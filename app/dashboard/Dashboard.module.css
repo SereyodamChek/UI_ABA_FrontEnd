@@ -1,0 +1,111 @@
+/* General Dialog Styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(23, 23, 23, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal {
+  max-width: 450px;
+  width: 100%;
+}
+
+.dialog {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem; /* 16px */
+  background-color: #ffffff;
+  padding: 1.75rem; /* 28px */
+  text-align: left;
+  vertical-align: middle;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  outline: none;
+}
+
+.dialogTitle {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0;
+  color: #1e293b; /* slate-800 */
+}
+
+.dialogIcon {
+  position: absolute;
+  top: 1.75rem; /* 28px */
+  right: 1.75rem; /* 28px */
+  color: #ef4444; /* red-500 */
+}
+
+.dialogDescription {
+  margin-top: 0.75rem; /* 12px */
+  color: #475569; /* slate-600 */
+  font-size: 0.95rem;
+}
+
+.dialogButtonContainer {
+  margin-top: 1.5rem; /* 24px */
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem; /* 8px */
+}
+
+/* Base Button Style */
+.dialogButton {
+  display: inline-flex;
+  justify-content: center;
+  border-radius: 0.5rem; /* 8px */
+  border: 1px solid transparent;
+  padding: 0.6rem 1.25rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  outline: none;
+}
+
+.dialogButton:focus-visible {
+  outline: 2px solid #3b82f6; /* blue-500 */
+  outline-offset: 2px;
+}
+
+/* Specific Button Variants */
+.cancelButton {
+  background-color: #ffffff;
+  color: #475569; /* slate-600 */
+  border-color: #e2e8f0; /* slate-200 */
+}
+
+.cancelButton:hover {
+  background-color: #f8fafc; /* slate-50 */
+}
+
+.confirmButton {
+  background-color: #dc2626; /* red-600 */
+  color: #ffffff;
+}
+
+.confirmButton:hover {
+  background-color: #b91c1c; /* red-700 */
+}
+
+/* Animations */
+.modalOverlay[data-entering] {
+  animation: fadeIn 200ms ease-out;
+}
+.modalOverlay[data-exiting] {
+  animation: fadeOut 150ms ease-in;
+}
+.modal[data-entering] .dialog {
+  animation: zoomIn 200ms ease-out;
+}
+.modal[data-exiting] .dialog {
+  animation: zoomOut 150ms ease-in;
+}
