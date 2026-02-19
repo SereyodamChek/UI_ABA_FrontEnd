@@ -1,13 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import styles from "./Dashboard.module.css";
-import {
-  Button,
-  Dialog,
-  Heading,
-  Modal,
-  ModalOverlay,
-} from "react-aria-components";
+import styles from "../dashboard/Dashboard.module.css";
+
+import { Button, Dialog, Heading, Modal, ModalOverlay } from "react-aria-components";
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -18,7 +13,6 @@ import {
   faHouse,
   faBank,
   faUser,
-  faArrowRightFromBracket,
   faPlus,
   faSignOut,
   faSearch,
@@ -28,6 +22,8 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons/faChartBar";
 import { faLink } from "@fortawesome/free-solid-svg-icons/faLink";
+
+/* ================= TRANSLATIONS (COPY FROM DASHBOARD) ================= */
 
 const translations: Record<string, Record<string, string>> = {
   km: {
@@ -47,16 +43,25 @@ const translations: Record<string, Record<string, string>> = {
     "Channel": "បញ្ជី",
     "Online": "អនឡាញ",
     "USD": "USD",
-    "KHR": "KHR",    
+    "KHR": "KHR",
     "Add New Account": "បញ្ជីគណនីថ្មី",
     "Report": "រាយការណ៍",
     "Last Month": "ខែមុន",
     "Last 3 Months": "៣ ខែចុងក្រោយ",
-    "ចាកចេញ": "ចាកចេញ",    
+    "ចាកចេញ": "ចាកចេញ",
     "Confirm Logout": "បញ្ជាក់ការចាកចេញ",
     "Are you sure you want to log out?": "តើអ្នកប្រាកដថាចង់ចាកចេញមែនទេ?",
     "No": "ទេ",
     "Yes, Logout": "បាទ/ចាស, ចាកចេញ",
+
+    // ✅ Finance specific (add these)
+    "Add Transaction": "បន្ថែមប្រតិបត្តិការ",
+    "Search transaction": "ស្វែងរកប្រតិបត្តិការ",
+    "All Transactions": "ប្រតិបត្តិការទាំងអស់",
+    "Income": "ចំណូល",
+    "Expense": "ចំណាយ",
+    "This Month": "ខែនេះ",
+    "No Finance Data": "មិនមានទិន្នន័យហិរញ្ញវត្ថុនៅឡើយ",
   },
   en: {
     "បញ្ជីគណនី": "Account List",
@@ -85,6 +90,15 @@ const translations: Record<string, Record<string, string>> = {
     "Are you sure you want to log out?": "Are you sure you want to log out?",
     "No": "No",
     "Yes, Logout": "Yes, Logout",
+
+    // ✅ Finance specific
+    "Add Transaction": "Add Transaction",
+    "Search transaction": "Search transaction",
+    "All Transactions": "All Transactions",
+    "Income": "Income",
+    "Expense": "Expense",
+    "This Month": "This Month",
+    "No Finance Data": "No financial records yet",
   },
   zh: {
     "បញ្ជីគណនី": "账户列表",
@@ -113,23 +127,32 @@ const translations: Record<string, Record<string, string>> = {
     "Are you sure you want to log out?": "您确定要登出吗？",
     "No": "取消",
     "Yes, Logout": "是的，登出",
+
+    // ✅ Finance specific
+    "Add Transaction": "添加交易",
+    "Search transaction": "搜索交易",
+    "All Transactions": "全部交易",
+    "Income": "收入",
+    "Expense": "支出",
+    "This Month": "本月",
+    "No Finance Data": "暂无财务数据",
   },
 };
 
-export default function DashboardPage() {
+export default function FinancePage() {
   const router = useRouter();
+
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState<"km" | "en" | "zh">("km");
+
   const langMenuRef = useRef<HTMLDivElement>(null);
-  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      // Close the lang menu if the click is outside
+
       if (
         langMenuRef.current &&
         !langMenuRef.current.contains(target) &&
@@ -137,42 +160,22 @@ export default function DashboardPage() {
       ) {
         setIsLangMenuOpen(false);
       }
-      // Close the user menu if the click is outside
-      if (
-        userMenuRef.current &&
-        !userMenuRef.current.contains(target) &&
-        !target.parentElement?.closest(".user-profile")
-      ) {
-        setIsUserMenuOpen(false);
-      }
     };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsLangMenuOpen(false);
-        setIsUserMenuOpen(false);
       }
     };
 
-    // Add the event listeners
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      // Clean up the event listeners
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []); // The empty dependency array ensures this effect runs only once
-
-  const handleSettingsClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsLangMenuOpen(!isLangMenuOpen);
-  };
-
-  const handleUserMenuClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
+  }, []);
 
   const t = (key: string): string => {
     return translations[currentLang]?.[key] || key;
@@ -183,28 +186,19 @@ export default function DashboardPage() {
     setIsLangMenuOpen(false);
   };
 
-  const handleMenuItemClick = () => {
-    // On mobile, close the sidebar when a menu item is clicked
+  const handleNavigate = (path: string) => {
+    router.push(path);
     if (window.innerWidth < 769) {
       setIsSidebarVisible(false);
     }
   };
 
   const handleLogout = () => {
-    // On mobile, close the sidebar when the logout dialog is opened
     if (window.innerWidth < 769) {
       setIsSidebarVisible(false);
     }
     setIsLogoutModalOpen(true);
   };
-  const handleNavigate = (path: string) => {
-  router.push(path);
-
-  if (window.innerWidth < 769) {
-    setIsSidebarVisible(false);
-  }
-};
-
 
   return (
     <div className="dashboard-page" suppressHydrationWarning>
@@ -213,7 +207,6 @@ export default function DashboardPage() {
         <div className="header-left">
           <div className="user-dropdown">
             <div className="user-avatar">
-              {" "}
               <img
                 src="/aba-logo.png"
                 alt="ABA Bank Logo"
@@ -221,12 +214,15 @@ export default function DashboardPage() {
               />
             </div>
           </div>
+
           <div
             className="menu-icon"
             onClick={() => setIsSidebarVisible(!isSidebarVisible)}
           >
             <FontAwesomeIcon icon={faBars} />
           </div>
+
+          {/* ✅ KEEP YOUR SAME HEADER LOGO/SVG HERE (copy from dashboard) */}
           <div className="logo">
             <svg
               viewBox="0 0 222 28"
@@ -245,6 +241,7 @@ export default function DashboardPage() {
             </svg>
           </div>
         </div>
+
         <div className="header-right">
           <div className="navi-toggle">
             <img
@@ -254,14 +251,13 @@ export default function DashboardPage() {
             />
             <span>{t("Ask Navi")}</span>
           </div>
-          <div
-            className={`settings-container lang ${
-              isLangMenuOpen ? "open" : ""
-            }`}
-          >
-            <div className="settings-icon" onClick={handleSettingsClick}>
+
+          {/* ✅ FLAG LANGUAGE MENU (same as dashboard) */}
+          <div className={`settings-container lang ${isLangMenuOpen ? "open" : ""}`}>
+            <div className="settings-icon" onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}>
               <FontAwesomeIcon icon={faGear} />
             </div>
+
             {isLangMenuOpen && (
               <div
                 ref={langMenuRef}
@@ -269,151 +265,74 @@ export default function DashboardPage() {
                 role="menu"
                 aria-label="Languages"
               >
-                <div
-                  className="lang-item"
-                  role="menuitem"
-                  tabIndex={0}
-                  onClick={() => {
-                    handleLanguageChange("km");
-                  }}
-                >
+                <div className="lang-item" role="menuitem" tabIndex={0} onClick={() => handleLanguageChange("km")}>
                   <span className="flag">
-                    <Image
-                      src="/khmer.png"
-                      alt="Khmer"
-                      width={16}
-                      height={12}
-                    />
+                    <Image src="/khmer.png" alt="Khmer" width={16} height={12} />
                   </span>
-                  <div>
-                    <div>ខ្មែរ</div>
-                  </div>
+                  <div>ខ្មែរ</div>
                 </div>
-                <div
-                  className="lang-item"
-                  role="menuitem"
-                  tabIndex={0}
-                  onClick={() => {
-                    handleLanguageChange("en");
-                  }}
-                >
+
+                <div className="lang-item" role="menuitem" tabIndex={0} onClick={() => handleLanguageChange("en")}>
                   <span className="flag">
-                    <Image
-                      src="/english.png"
-                      alt="English"
-                      width={16}
-                      height={12}
-                    />
+                    <Image src="/english.png" alt="English" width={16} height={12} />
                   </span>
-                  <div>
-                    <div>English</div>
-                  </div>
+                  <div>English</div>
                 </div>
-                <div
-                  className="lang-item"
-                  role="menuitem"
-                  tabIndex={0}
-                  onClick={() => {
-                    handleLanguageChange("zh");
-                  }}
-                >
+
+                <div className="lang-item" role="menuitem" tabIndex={0} onClick={() => handleLanguageChange("zh")}>
                   <span className="flag">
-                    <Image
-                      src="/china.png"
-                      alt="Chinese"
-                      width={16}
-                      height={12}
-                    />
+                    <Image src="/china.png" alt="Chinese" width={16} height={12} />
                   </span>
-                  <div>
-                    <div>中文</div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          <div
-            className={`settings-container user ${
-              isUserMenuOpen ? "open" : ""
-            }`}
-          >
-            
-            {isUserMenuOpen && (
-              <div className="settings-modal">
-                <div className="settings-section">
-                  <button className="logout-btn">
-                    <FontAwesomeIcon icon={faArrowRightFromBracket} />
-                    <span>Logout</span>
-                  </button>
+                  <div>中文</div>
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
+
       {/* MAIN LAYOUT */}
-      <div
-        className={`main-container ${
-          !isSidebarVisible ? "sidebar-collapsed" : ""
-        }`}
-      >
+      <div className={`main-container ${!isSidebarVisible ? "sidebar-collapsed" : ""}`}>
         {/* SIDEBAR */}
-        {/* SIDEBAR */}
-<div className={`sidebar ${isSidebarVisible ? "open" : ""}`}>
-  <div className="sidebar-menu">
+        <div className={`sidebar ${isSidebarVisible ? "open" : ""}`}>
+          <div className="sidebar-menu">
+            <div className="menu-item" onClick={() => handleNavigate("/dashboard")}>
+              <div className="menu-icon-wrapper">
+                <FontAwesomeIcon icon={faHouse} />
+              </div>
+              <div className="menu-text">{t("បញ្ជីគណនី")}</div>
+            </div>
 
-    <div
-      className="menu-item active"
-      onClick={() => handleNavigate("/dashboard")}
-    >
-      <div className="menu-icon-wrapper">
-        <FontAwesomeIcon icon={faHouse} />
-      </div>
-      <div className="menu-text">{t("បញ្ជីគណនី")}</div>
-    </div>
+            {/* ✅ FINANCE ACTIVE */}
+            <div className="menu-item active" onClick={() => handleNavigate("/finance")}>
+              <div className="menu-icon-wrapper">
+                <FontAwesomeIcon icon={faBank} />
+              </div>
+              <div className="menu-text">{t("វិស័យហិរញ្ញវត្ថុ")}</div>
+            </div>
 
-    <div
-      className="menu-item"
-      onClick={() => handleNavigate("/finance")}
-    >
-      <div className="menu-icon-wrapper">
-        <FontAwesomeIcon icon={faBank} />
-      </div>
-      <div className="menu-text">{t("វិស័យហិរញ្ញវត្ថុ")}</div>
-    </div>
+            <div className="menu-item" onClick={() => handleNavigate("/customer")}>
+              <div className="menu-icon-wrapper">
+                <FontAwesomeIcon icon={faUser} />
+              </div>
+              <div className="menu-text">{t("អតិថិជន")}</div>
+            </div>
 
-    <div
-      className="menu-item"
-      onClick={() => handleNavigate("/customer")}
-    >
-      <div className="menu-icon-wrapper">
-        <FontAwesomeIcon icon={faUser} />
-      </div>
-      <div className="menu-text">{t("អតិថិជន")}</div>
-    </div>
+            <div className="menu-item" onClick={() => handleNavigate("/management")}>
+              <div className="menu-icon-wrapper">
+                <FontAwesomeIcon icon={faChartBar} />
+              </div>
+              <div className="menu-text">{t("កម្មវិធីគ្រប់គ្រង")}</div>
+            </div>
 
-    <div
-      className="menu-item"
-      onClick={() => handleNavigate("/management")}
-    >
-      <div className="menu-icon-wrapper">
-        <FontAwesomeIcon icon={faChartBar} />
-      </div>
-      <div className="menu-text">{t("កម្មវិធីគ្រប់គ្រង")}</div>
-    </div>
+            <div className="menu-item" onClick={() => handleNavigate("/contacts")}>
+              <div className="menu-icon-wrapper">
+                <FontAwesomeIcon icon={faLink} />
+              </div>
+              <div className="menu-text">{t("លេខទំនាក់ទំនង")}</div>
+            </div>
 
-    <div
-      className="menu-item"
-      onClick={() => handleNavigate("/contacts")}
-    >
-      <div className="menu-icon-wrapper">
-        <FontAwesomeIcon icon={faLink} />
-      </div>
-      <div className="menu-text">{t("លេខទំនាក់ទំនង")}</div>
-    </div>
-
-
-             <div className="menu-item" onClick={handleLogout}>
+            <div className="menu-item" onClick={handleLogout}>
               <div className="menu-icon-wrapper">
                 <FontAwesomeIcon icon={faSignOut} />
               </div>
@@ -421,51 +340,44 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+
         {/* CONTENT */}
         <div className="content">
-          <div className="page-title">{t("បញ្ជីគណនី")}</div>
+          <div className="page-title">{t("វិស័យហិរញ្ញវត្ថុ")}</div>
+
           <div className="filters">
             <select className="filter-select">
-              <option>{t("All Currency")}</option>
-              <option>{t("USD")}</option>
-              <option>{t("KHR")}</option>
+              <option>{t("All Transactions")}</option>
+              <option>{t("Income")}</option>
+              <option>{t("Expense")}</option>
             </select>
+
             <select className="filter-select">
-              <option>{t("7 ថ្ងៃចុងក្រោយ")}</option>
-              <option>{t("30 ថ្ងៃចុងក្រោយ")}</option>
-            </select>
-            <select className="filter-select">
-              <option>{t("Channel")}</option>
-              <option>{t("Online")}</option>
-            </select>
-             <select className="filter-select">
-              <option>{t("Report")}</option>
+              <option>{t("This Month")}</option>
               <option>{t("Last Month")}</option>
-              <option>{t("Last 3 Months")}</option>
             </select>
+
             <div className="search-bar">
-              <input
-                type="text"
-                className="search-input"
-                placeholder={t("ស្វែងរកតាមឈ្មោះ ឬលេខគណនី")}
-              />
+              <input type="text" className="search-input" placeholder={t("Search transaction")} />
               <div className="search-icon">
                 <FontAwesomeIcon icon={faSearch} />
               </div>
             </div>
           </div>
+
           <div className="empty-state">
             <div style={{ fontSize: 50, color: "#ccc" }}>
               <FontAwesomeIcon icon={faClipboardList} />
             </div>
-            <div>{t("មិនមានគណនីណាមួយនៅឡើយ")}</div>
+            <div>{t("No Finance Data")}</div>
           </div>
         </div>
       </div>
+
       {/* ADD BUTTON */}
       <button className="add-button">
         <FontAwesomeIcon icon={faPlus} />
-        <span>{t("Add New Account")}</span>
+        <span>{t("Add Transaction")}</span>
       </button>
 
       <LogoutConfirmationDialog
@@ -477,13 +389,13 @@ export default function DashboardPage() {
   );
 }
 
+/* ================= LOGOUT DIALOG (SAME AS DASHBOARD) ================= */
+
 function DialogButton({
   className,
   ...props
 }: { className?: string } & React.ComponentProps<typeof Button>) {
-  return (
-    <Button {...props} className={`${styles.dialogButton} ${className}`} />
-  );
+  return <Button {...props} className={`${styles.dialogButton} ${className}`} />;
 }
 
 function LogoutConfirmationDialog({
@@ -511,10 +423,7 @@ function LogoutConfirmationDialog({
         <Dialog role="alertdialog" className={styles.dialog}>
           {({ close }) => (
             <>
-              <Heading
-                slot="title"
-                className={styles.dialogTitle}
-              >
+              <Heading slot="title" className={styles.dialogTitle}>
                 {t("Confirm Logout")}
               </Heading>
               <div className={styles.dialogIcon}>
@@ -524,16 +433,10 @@ function LogoutConfirmationDialog({
                 {t("Are you sure you want to log out?")}
               </p>
               <div className={styles.dialogButtonContainer}>
-                <DialogButton
-                  className={styles.cancelButton}
-                  onPress={close}
-                >
+                <DialogButton className={styles.cancelButton} onPress={close}>
                   {t("No")}
                 </DialogButton>
-                <DialogButton
-                  className={styles.confirmButton}
-                  onPress={performLogout}
-                >
+                <DialogButton className={styles.confirmButton} onPress={performLogout}>
                   {t("Yes, Logout")}
                 </DialogButton>
               </div>
