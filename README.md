@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Next.js Project
 
-## Getting Started
+### 👨‍💻 Built by Sereyodam
 
-First, run the development server:
+---
+
+## 📌 About This Project
+
+This is a modern web application built with **Next.js**, bootstrapped using `create-next-app`.
+
+⚠️ **Note:** This project is currently **UI only (Frontend only)** — no backend or API integration yet.
+
+The project focuses on building clean interfaces, responsive design, and modern frontend architecture.
+
+---
+
+## 🛠️ Tech Stack
+
+* ⚛️ **Next.js (App Router)**
+* 💻 **TypeScript**
+* 🎨 **CSS / PostCSS**
+* 📦 **Node.js & npm**
+* 🧹 **ESLint**
+
+---
+
+## 📂 Project Structure
+
+```
+/app        → Main application routes & pages
+/public     → Static assets
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Run development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Open in browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+👉 [http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app will automatically reload when you make changes.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✏️ Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Start editing your application by modifying:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/page.tsx
+```
 
-## Deploy on Vercel
+This project uses **next/font** for optimized font loading.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📚 Learn More
+
+* 📖 [https://nextjs.org/docs](https://nextjs.org/docs)
+* 🎓 [https://nextjs.org/learn](https://nextjs.org/learn)
+* 💡 [https://github.com/vercel/next.js](https://github.com/vercel/next.js)
+
+---
+
+## 🚀 Deployment
+
+The easiest way to deploy this app is using **Vercel**:
+
+👉 [https://vercel.com](https://vercel.com)
+
+Follow the official guide:
+[https://nextjs.org/docs/app/building-your-application/deploying](https://nextjs.org/docs/app/building-your-application/deploying)
+
+---
+
+## 📈 Future Improvements
+
+* 🔐 Authentication system
+* 🧠 AI-powered features
+* ⚡ Performance optimization
+* 📱 Responsive UI enhancements
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+---
+
+## 📫 Contact
+
+* GitHub: [https://github.com/YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+* Email: [sereyodamc@gmail.com](mailto:sereyodamc@gmail.com)
+
+---
+
+⭐ *Built with passion for learning and innovation.*
