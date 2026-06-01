@@ -103,7 +103,7 @@ Contributions, issues, and feature requests are welcome!
 
 ## 📫 Contact
 
-* GitHub: [https://github.com/YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+* GitHub: [https://github.com/SereyodamChek](https://github.com/SereyodamChek)
 * Email: [sereyodamc@gmail.com](mailto:sereyodamc@gmail.com)
 
 ---
